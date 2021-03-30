@@ -1,0 +1,17 @@
+test:
+  service: myapp-1
+
+spring.jpa:
+  database: POSTGRESQL
+  hibernate.ddl-auto: update
+  show-sql: false
+
+spring.batch:
+  initialize-schema: always
+
+spring.datasource:
+  platform: postgres
+  driverClassName: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/batch
+  username: batch
+  password: batch

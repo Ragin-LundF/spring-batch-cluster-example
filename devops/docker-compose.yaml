@@ -1,0 +1,46 @@
+version: '3.6'
+
+services:
+  postgres-batch:
+    container_name: postgres-batch
+    image: postgres
+    environment:
+      POSTGRES_USER: batch
+      POSTGRES_PASSWORD: batch
+    ports:
+      - "5432:5432"
+    networks:
+      - batchtest
+    restart: unless-stopped
+  batch-instance1:
+    container_name: batch-instance1
+    image: batch-instance
+    environment:
+      TEST_SERVER: batch-instance-1
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
+    ports:
+      - "8080:8080"
+    networks:
+      - batchtest
+  batch-instance2:
+    container_name: batch-instance2
+    image: batch-instance
+    environment:
+      TEST_SERVER: batch-instance-2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
+    ports:
+      - "8081:8080"
+    networks:
+      - batchtest
+  batch-instance3:
+    container_name: batch-instance3
+    image: batch-instance
+    environment:
+      TEST_SERVER: batch-instance-3
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
+    ports:
+      - "8082:8080"
+    networks:
+      - batchtest
+networks:
+  batchtest:
