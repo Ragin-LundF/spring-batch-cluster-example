@@ -7,14 +7,13 @@ import com.example.batch.repositories.TransactionsRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import javax.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.randomizers.range.BigDecimalRangeRandomizer;
 import org.jeasy.random.randomizers.text.StringRandomizer;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -31,20 +30,23 @@ public class RestAPI {
     private static final List<String> LABELS = Arrays.asList(
             "TEST", "MAIL", "SHOPPING", "INSURANCE", "CAR"
     );
+    private static final String JOB_ID = "JobID";
 
     private final TransactionsRepository trxRepository;
     @Qualifier(QUALIFIER_TRX_JOB)
     private final Job trxJobs;
+    private final JobLauncher jobLauncher;
 
     @GetMapping("/start")
     public ResponseEntity<String> start() {
         LABELS.forEach(
                 label -> {
                     final var jobParams = new JobParametersBuilder()
+                            .addString(JOB_ID, String.valueOf(System.currentTimeMillis()))
                             .addString(JOB_PARAM_LABEL, label)
                             .toJobParameters();
                     try {
-                        new SimpleJobLauncher().run(trxJobs, jobParams);
+                        jobLauncher.run(trxJobs, jobParams);
                     } catch (Exception e) {
                         log.error("Could not execute job", e);
                     }

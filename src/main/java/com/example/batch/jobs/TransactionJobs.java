@@ -12,6 +12,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
@@ -46,6 +47,7 @@ public class TransactionJobs {
     public Job trxJob(@Qualifier(QUALIFIER_TRX_STEP) final Step transactionJob) {
         return jobBuilderFactory
                 .get(JOB_TRX)
+                .incrementer(new RunIdIncrementer())
                 .start(transactionJob)
                 .build();
     }
