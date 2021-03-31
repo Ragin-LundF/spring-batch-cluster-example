@@ -2,6 +2,7 @@ package com.example.batch.api;
 
 import static com.example.batch.jobs.TransactionJobs.JOB_PARAM_LABEL;
 import static com.example.batch.jobs.TransactionJobs.QUALIFIER_TRX_JOB;
+import com.example.batch.jobs.JobRunner;
 import com.example.batch.models.Transactions;
 import com.example.batch.repositories.TransactionsRepository;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class RestAPI {
     private static final BigDecimalRangeRandomizer BD_RANDOM = new BigDecimalRangeRandomizer(1.0, 1000.0);
     private static final StringRandomizer STR_RANDOM = new StringRandomizer(20);
     private static final List<String> LABELS = Arrays.asList(
-            "TEST", "MAIL", "SHOPPING", "INSURANCE", "CAR"
+            "TEST", "MAIL", "SHOPPING", "INSURANCE", "CAR", "TV", "SALARY", "SECURITIES"
     );
     private static final String JOB_ID = "JobID";
 
@@ -37,9 +38,18 @@ public class RestAPI {
     @Qualifier(QUALIFIER_TRX_JOB)
     private final Job trxJobs;
     private final JobLauncher jobLauncher;
+    private final JobRunner jobRunner;
 
-    @GetMapping("/start")
-    public ResponseEntity<String> start() {
+    @GetMapping("/startJobrnr")
+    public ResponseEntity<String> startJobRnr() {
+        LABELS.forEach(
+                jobRunner::startJobs
+        );
+        return ResponseEntity.ok("jobrnr started");
+    }
+
+    @GetMapping("/startBatch")
+    public ResponseEntity<String> startBatch() {
         LABELS.forEach(
                 label -> {
                     final var jobParams = new JobParametersBuilder()
@@ -53,7 +63,7 @@ public class RestAPI {
                     }
                 }
         );
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("batch started");
     }
 
     @GetMapping("/generate/{trx}")

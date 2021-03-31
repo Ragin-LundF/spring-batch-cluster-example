@@ -37,7 +37,7 @@ public class TransactionJobs {
     private static final String STEP_TRX = "STEP_TRX";
 
     private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory trxSteps;
+    private final StepBuilderFactory stepBuilderFactory;
 
     @Value("${test.service:none}")
     private String serverId;
@@ -59,7 +59,7 @@ public class TransactionJobs {
             @Qualifier(QUALIFIER_TRX_PROCESSOR) final ItemProcessor<Transactions, Aggregate> trxProcessor,
             @Qualifier(QUALIFIER_TRX_WRITER) final RepositoryItemWriter<Aggregate> trxWriter
     ) {
-        return trxSteps.get(STEP_TRX)
+        return stepBuilderFactory.get(STEP_TRX)
                 .<Transactions, Aggregate>chunk(2)
                 .reader(trxItemReader)
                 .processor(trxProcessor)

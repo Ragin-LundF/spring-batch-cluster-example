@@ -15,3 +15,11 @@ spring.datasource:
   url: jdbc:postgresql://localhost:5432/batch
   username: batch
   password: batch
+
+org.jobrunr:
+  job-scheduler.enabled: true
+  background-job-server:
+    enabled: true
+    poll-interval-in-seconds: 1
+    worker_count: 8
+  dashboard.enabled: true
