@@ -6,6 +6,7 @@ import com.example.batch.models.Transactions;
 import com.example.batch.repositories.TransactionsRepository;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class RestAPI {
         LABELS.forEach(
                 label -> {
                     final var jobParams = new JobParametersBuilder()
-                            .addString(JOB_ID, String.valueOf(System.currentTimeMillis()))
+                            .addString(JOB_ID, UUID.randomUUID().toString())
                             .addString(JOB_PARAM_LABEL, label)
                             .toJobParameters();
                     try {

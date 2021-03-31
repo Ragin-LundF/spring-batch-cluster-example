@@ -60,7 +60,7 @@ public class TransactionJobs {
             @Qualifier(QUALIFIER_TRX_WRITER) final RepositoryItemWriter<Aggregate> trxWriter
     ) {
         return trxSteps.get(STEP_TRX)
-                .<Transactions, Aggregate>chunk(5)
+                .<Transactions, Aggregate>chunk(2)
                 .reader(trxItemReader)
                 .processor(trxProcessor)
                 .writer(trxWriter)
@@ -104,6 +104,7 @@ public class TransactionJobs {
             final var aggregate = new Aggregate();
             aggregate.setTrxId(trx.getId());
             aggregate.setServer(serverId);
+            Thread.sleep(500);
             return aggregate;
         };
     }
