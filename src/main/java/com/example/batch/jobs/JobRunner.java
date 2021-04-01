@@ -25,10 +25,6 @@ public class JobRunner {
     public void startJobs(@NonNull final String label) {
         BackgroundJob.enqueue(() -> {
             transformData(label);
-            try {
-                Thread.sleep(400);
-            } catch(InterruptedException e) {
-            }
         });
     }
 
