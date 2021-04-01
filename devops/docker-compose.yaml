@@ -15,6 +15,8 @@ services:
   batch-instance1:
     container_name: batch-instance1
     image: batch-instance
+    depends_on:
+      - postgres-batch
     environment:
       TEST_SERVICE: batch-instance-1
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
@@ -26,6 +28,8 @@ services:
   batch-instance2:
     container_name: batch-instance2
     image: batch-instance
+    depends_on:
+      - postgres-batch
     environment:
       TEST_SERVICE: batch-instance-2
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
@@ -37,6 +41,8 @@ services:
   batch-instance3:
     container_name: batch-instance3
     image: batch-instance
+    depends_on:
+      - postgres-batch
     environment:
       TEST_SERVICE: batch-instance-3
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-batch:5432/batch
