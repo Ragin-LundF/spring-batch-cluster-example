@@ -1,14 +1,8 @@
 package com.example.batch.api;
 
-import static com.example.batch.jobs.TransactionJobs.JOB_PARAM_LABEL;
-import static com.example.batch.jobs.TransactionJobs.QUALIFIER_TRX_JOB;
 import com.example.batch.jobs.JobRunner;
 import com.example.batch.models.Transactions;
 import com.example.batch.repositories.TransactionsRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.randomizers.range.BigDecimalRangeRandomizer;
@@ -22,6 +16,14 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.example.batch.jobs.TransactionJobs.JOB_PARAM_LABEL;
+import static com.example.batch.jobs.TransactionJobs.QUALIFIER_TRX_JOB;
 
 @Slf4j
 @RestController
@@ -40,6 +42,11 @@ public class RestAPI {
     private final JobLauncher jobLauncher;
     private final JobRunner jobRunner;
 
+    /**
+     * Use JobRnr instead of Spring Batch.
+     *
+     * @return ok
+     */
     @GetMapping("/startJobrnr")
     public ResponseEntity<String> startJobRnr() {
         LABELS.forEach(
@@ -48,6 +55,11 @@ public class RestAPI {
         return ResponseEntity.ok("jobrnr started");
     }
 
+    /**
+     * Trigger Spring Batch processing.
+     *
+     * @return ok
+     */
     @GetMapping("/startBatch")
     public ResponseEntity<String> startBatch() {
         LABELS.forEach(
@@ -66,6 +78,12 @@ public class RestAPI {
         return ResponseEntity.ok("batch started");
     }
 
+    /**
+     * Generate dummy data.
+     *
+     * @param numberOfTrx number of transactions should be generated.
+     * @return ok
+     */
     @GetMapping("/generate/{trx}")
     public ResponseEntity<String> generate(final @NonNull @PathVariable("trx") Integer numberOfTrx) {
         Transactions trx;
