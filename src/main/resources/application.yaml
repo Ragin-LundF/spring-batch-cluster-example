@@ -21,5 +21,5 @@ org.jobrunr:
   background-job-server:
     enabled: true
     poll-interval-in-seconds: 1
-    worker_count: 8
+    worker_count: 2
   dashboard.enabled: true

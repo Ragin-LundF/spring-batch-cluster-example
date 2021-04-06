@@ -4,13 +4,15 @@ import com.example.batch.models.Aggregate;
 import com.example.batch.models.Transactions;
 import com.example.batch.repositories.AggregateRepository;
 import com.example.batch.repositories.TransactionsRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jobrunr.jobs.annotations.Job;
 import org.jobrunr.scheduling.BackgroundJob;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,11 +25,12 @@ public class JobRunner {
     private String serverId;
 
     public void startJobs(@NonNull final String label) {
-        BackgroundJob.enqueue(() -> {
+        final var jobId = BackgroundJob.enqueue(() -> {
             transformData(label);
         });
     }
 
+    @Job(retries = 2)
     public void transformData(@NonNull final String label) {
         final var trxs = trxRepository.findAllByLabel(label);
         log.info(String.format("Found %d transactions for label %s", trxs.size(), label));
