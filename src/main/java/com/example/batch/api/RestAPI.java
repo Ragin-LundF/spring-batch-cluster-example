@@ -1,30 +1,22 @@
 package com.example.batch.api;
 
 import com.example.batch.jobs.JobRunner;
+import com.example.batch.models.Aggregate;
 import com.example.batch.models.Transactions;
 import com.example.batch.repositories.AggregateRepository;
 import com.example.batch.repositories.TransactionsRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.randomizers.range.BigDecimalRangeRandomizer;
 import org.jeasy.random.randomizers.text.StringRandomizer;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.example.batch.jobs.TransactionJobs.JOB_PARAM_LABEL;
-import static com.example.batch.jobs.TransactionJobs.QUALIFIER_TRX_JOB;
 
 @Slf4j
 @RestController
@@ -35,19 +27,15 @@ public class RestAPI {
     private static final List<String> LABELS = Arrays.asList(
             "TEST", "MAIL", "SHOPPING", "INSURANCE", "CAR", "TV", "SALARY", "SECURITIES"
     );
-    private static final String JOB_ID = "JobID";
 
     private final AggregateRepository aggregateRepository;
     private final TransactionsRepository trxRepository;
-    @Qualifier(QUALIFIER_TRX_JOB)
-    private final Job trxJobs;
-    private final JobLauncher jobLauncher;
     private final JobRunner jobRunner;
 
     @GetMapping("/aggStatus")
     public ResponseEntity<String> aggregationStatus() {
         final var aggResult = aggregateRepository.findAll();
-        return ResponseEntity.ok(((List) aggResult).size() + " was aggregated.");
+        return ResponseEntity.ok(String.valueOf(((List<Aggregate>) aggResult).size()));
     }
 
     /**
@@ -61,29 +49,6 @@ public class RestAPI {
                 jobRunner::startJobs
         );
         return ResponseEntity.ok("jobrnr started");
-    }
-
-    /**
-     * Trigger Spring Batch processing.
-     *
-     * @return ok
-     */
-    @GetMapping("/startBatch")
-    public ResponseEntity<String> startBatch() {
-        LABELS.forEach(
-                label -> {
-                    final var jobParams = new JobParametersBuilder()
-                            .addString(JOB_ID, UUID.randomUUID().toString())
-                            .addString(JOB_PARAM_LABEL, label)
-                            .toJobParameters();
-                    try {
-                        jobLauncher.run(trxJobs, jobParams);
-                    } catch (Exception e) {
-                        log.error("Could not execute job", e);
-                    }
-                }
-        );
-        return ResponseEntity.ok("batch started");
     }
 
     /**
