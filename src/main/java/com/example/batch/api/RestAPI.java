@@ -2,6 +2,7 @@ package com.example.batch.api;
 
 import com.example.batch.jobs.JobRunner;
 import com.example.batch.models.Transactions;
+import com.example.batch.repositories.AggregateRepository;
 import com.example.batch.repositories.TransactionsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +37,18 @@ public class RestAPI {
     );
     private static final String JOB_ID = "JobID";
 
+    private final AggregateRepository aggregateRepository;
     private final TransactionsRepository trxRepository;
     @Qualifier(QUALIFIER_TRX_JOB)
     private final Job trxJobs;
     private final JobLauncher jobLauncher;
     private final JobRunner jobRunner;
+
+    @GetMapping("/aggStatus")
+    public ResponseEntity<String> aggregationStatus() {
+        final var aggResult = aggregateRepository.findAll();
+        return ResponseEntity.ok(((List) aggResult).size() + " was aggregated.");
+    }
 
     /**
      * Use JobRnr instead of Spring Batch.

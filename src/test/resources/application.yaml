@@ -1,0 +1,23 @@
+test:
+  service: myapp-1
+
+spring.jpa:
+  hibernate.ddl-auto: update
+  show-sql: false
+
+spring.batch:
+  initialize-schema: always
+
+spring.datasource:
+  driverClassName: org.h2.Driver
+  url: jdbc:h2:mem:batch
+  username: sa
+  password: password
+
+org.jobrunr:
+  job-scheduler.enabled: true
+  background-job-server:
+    enabled: true
+    poll-interval-in-seconds: 1
+    worker_count: 2
+  dashboard.enabled: true
